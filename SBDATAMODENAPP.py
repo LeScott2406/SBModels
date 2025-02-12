@@ -9,7 +9,7 @@ import pandas as pd
 
 @st.cache_data
 def load_data():
-    file_url = 'https://github.com/LeScott2406/Model-App/raw/refs/heads/main/value_added_model%202.xlsx'
+    file_url = 'https://github.com/LeScott2406/SBModels/raw/refs/heads/main/Updated_Data_With_Models_and_Percentiles_Optimized_v4.xlsx'
     response = requests.get(file_url)
     file_content = io.BytesIO(response.content)
     data = pd.read_excel(file_content)
