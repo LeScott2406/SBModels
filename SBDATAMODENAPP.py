@@ -1,36 +1,21 @@
-#!/usr/bin/env python
-# coding: utf-8
-
 import streamlit as st
 import pandas as pd
 import requests
 import io
 
-# Ensure openpyxl is installed for reading Excel files
-try:
-    import openpyxl
-except ImportError:
-    st.error("Missing optional dependency 'openpyxl'. Install it using `pip install openpyxl`.")
-    st.stop()
-
+# Function to load data
 @st.cache_data
 def load_data():
-    file_url = 'https://github.com/LeScott2406/SBModels/raw/refs/heads/main/Updated_Data_With_Models_and_Percentiles_Optimized_v4.xlsx'
-    
+    file_url = "https://github.com/LeScott2406/StatsApp/raw/main/data/Updated_Data.xlsx"  # Update with actual URL
     try:
         response = requests.get(file_url)
         response.raise_for_status()  # Raises an error if the request fails
-        
         file_content = io.BytesIO(response.content)
-        data = pd.read_excel(file_content, engine="openpyxl")  # Explicitly specify engine
+        data = pd.read_excel(file_content, engine="openpyxl")  # Ensure openpyxl is installed
         data.fillna(0, inplace=True)
         return data
-    
     except requests.exceptions.RequestException as e:
-        st.error(f"Error fetching data: {e}")
-        return None
-    except Exception as e:
-        st.error(f"Error reading Excel file: {e}")
+        st.error(f"Error loading data: {e}")
         return None
 
 # Load data
@@ -40,81 +25,72 @@ data = load_data()
 if data is None:
     st.stop()
 
-# Streamlit App Header
-st.title('SB Player Models')
+# Sidebar Filters
+st.sidebar.header("Filters")
 
-# Left Sidebar for Filters
-st.sidebar.header('Filters')
+# Age filter
+age_min, age_max = int(data["Age"].min()), int(data["Age"].max())
+age_range = st.sidebar.slider("Select Age Range", min_value=age_min, max_value=age_max, value=(age_min, age_max))
 
-# Age Filter
-age_min, age_max = data['Age'].min(), data['Age'].max()
-age_range = st.sidebar.slider('Select Age Range', min_value=age_min, max_value=age_max, value=(age_min, age_max))
+# Usage filter
+usage_min, usage_max = float(data["Usage"].min()), float(data["Usage"].max())
+usage_range = st.sidebar.slider("Select Usage Range", min_value=usage_min, max_value=usage_max, value=(usage_min, usage_max))
 
-# Usage Filter
-usage_min, usage_max = data['Usage'].min(), data['Usage'].max()
-usage_range = st.sidebar.slider('Select Usage Range', min_value=usage_min, max_value=usage_max, value=(usage_min, usage_max))
+# Position filter (Fix: Added 'All' to the options correctly)
+position_options = data["Position"].unique().tolist()  
+position_options.insert(0, "All")  # Add 'All' at the start
+positions = st.sidebar.multiselect("Select Positions", options=position_options, default=position_options)
 
-# Position Filter
-positions = st.sidebar.multiselect('Select Positions', options=data['Position'].unique().tolist(), default=data['Position'].unique().tolist() + ['All'])
+# Competition filter
+competition_options = data["Competition"].unique().tolist()
+competition_options.insert(0, "All")
+competitions = st.sidebar.multiselect("Select Competitions", options=competition_options, default=competition_options)
 
-# Competition Filter
-competitions = st.sidebar.multiselect('Select Competitions', options=data['Competition'].unique().tolist(), default=data['Competition'].unique().tolist() + ['All'])
-
-# Team Filter (Dependent on Competition)
-selected_competitions = [comp for comp in competitions if comp != 'All']
-if selected_competitions:
-    teams_in_competition = data[data['Competition'].isin(selected_competitions)]['Team'].unique()
-    teams = st.sidebar.multiselect('Select Teams', options=teams_in_competition.tolist(), default=teams_in_competition.tolist() + ['All'])
+# Team filter (Dynamic based on competition selection)
+if "All" in competitions:
+    filtered_teams = data["Team"].unique().tolist()
 else:
-    teams = st.sidebar.multiselect('Select Teams', options=data['Team'].unique().tolist(), default=data['Team'].unique().tolist() + ['All'])
+    filtered_teams = data[data["Competition"].isin(competitions)]["Team"].unique().tolist()
 
-# Role Filter
-roles = [
-    'Dominant Defender Percentile', 'Ball Playing Defender Percentile', 
-    'Defensive Fullback Percentile', 'Attacking Fullback Percentile', 
-    'Holding Midfielder Percentile', 'Ball Progressor Percentile', 
-    'Number 10 Percentile', 'Box Crasher Percentile', 
-    'Half Space Creator Percentile', 'Inverted Winger Percentile', 
-    'Creative Winger Percentile', 'Advanced Striker Percentile', 
-    'Physical Striker Percentile', 'Creative Striker Percentile'
-]
-role = st.sidebar.selectbox('Select Role', options=roles)
+filtered_teams.insert(0, "All")
+teams = st.sidebar.multiselect("Select Teams", options=filtered_teams, default=filtered_teams)
 
-# Filter Data Based on User Selections
+# Role filter
+roles = ["Dominant Defender", "Ball Playing Defender", "Defensive Fullback", "Attacking Fullback", 
+         "Holding Midfielder", "Ball Progressor", "Number 10", "Box Crasher", "Half Space Creator", 
+         "Inverted Winger", "Creative Winger", "Advanced Striker", "Physical Striker", "Creative Striker"]
+
+selected_role = st.sidebar.selectbox("Select Role", roles)
+
+# Apply filters
 filtered_data = data[
-    (data['Age'] >= age_range[0]) & 
-    (data['Age'] <= age_range[1]) & 
-    (data['Usage'] >= usage_range[0]) & 
-    (data['Usage'] <= usage_range[1])
+    (data["Age"].between(age_range[0], age_range[1])) &
+    (data["Usage"].between(usage_range[0], usage_range[1])) &
+    ((data["Position"].isin(positions)) if "All" not in positions else True) &
+    ((data["Competition"].isin(competitions)) if "All" not in competitions else True) &
+    ((data["Team"].isin(teams)) if "All" not in teams else True)
 ]
 
-# Apply Position, Competition, and Team Filters
-if 'All' not in positions:
-    filtered_data = filtered_data[filtered_data['Position'].isin(positions)]
-if 'All' not in competitions:
-    filtered_data = filtered_data[filtered_data['Competition'].isin(competitions)]
-if 'All' not in teams:
-    filtered_data = filtered_data[filtered_data['Team'].isin(teams)]
+# Determine Best Role
+def best_role(row):
+    position_roles = {
+        "Defender": ["Dominant Defender Percentile", "Ball Playing Defender Percentile"],
+        "Fullback": ["Defensive Fullback Percentile", "Attacking Fullback Percentile"],
+        "Midfielder": ["Holding Midfielder Percentile", "Ball Progressor Percentile", 
+                       "Number 10 Percentile", "Box Crasher Percentile", "Half Space Creator Percentile"],
+        "Winger": ["Half Space Creator Percentile", "Inverted Winger Percentile", "Creative Winger Percentile"],
+        "Striker": ["Advanced Striker Percentile", "Physical Striker Percentile", "Creative Striker Percentile"],
+    }
+    for pos, roles in position_roles.items():
+        if row["Position"] in pos:
+            return max(roles, key=lambda role: row.get(role, 0))
+    return "Unknown"
 
-# Calculate Best Role Based on Position
-def get_best_role(row):
-    position = row['Position']
-    if position == 'Defender':
-        return max(row['Dominant Defender Percentile'], row['Ball Playing Defender Percentile'])
-    elif position == 'Fullback':
-        return max(row['Defensive Fullback Percentile'], row['Attacking Fullback Percentile'])
-    elif position == 'Midfielder':
-        return max(row['Holding Midfielder Percentile'], row['Ball Progressor Percentile'], 
-                   row['Number 10 Percentile'], row['Box Crasher Percentile'], row['Half Space Creator Percentile'])
-    elif position == 'Winger':
-        return max(row['Half Space Creator Percentile'], row['Inverted Winger Percentile'], row['Creative Winger Percentile'])
-    elif position == 'Striker':
-        return max(row['Advanced Striker Percentile'], row['Physical Striker Percentile'], row['Creative Striker Percentile'])
-    return None
+filtered_data["Best Role"] = filtered_data.apply(best_role, axis=1)
 
-# Apply the Best Role calculation
-filtered_data['Best Role'] = filtered_data.apply(get_best_role, axis=1)
+# Display Data
+st.title("SB Player Models")
+st.write("### Filtered Players")
 
-# Display Data in Table
-columns = ['Name', 'Team', 'Age', 'Usage', 'Position', role, 'Best Role']
-st.dataframe(filtered_data[columns])
+st.dataframe(filtered_data[["Name", "Team", "Age", "Usage", "Position", selected_role, "Best Role"]])
+
