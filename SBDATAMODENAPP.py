@@ -53,9 +53,9 @@ competition_options.insert(0, "All")
 competitions = st.sidebar.multiselect("Select Competitions", options=competition_options, default=competition_options)
 
 # Role filter
-roles = ["Dominant Defender", "Ball Playing Defender", "Defensive Fullback", "Attacking Fullback", 
-         "Holding Midfielder", "Ball Progressor", "Number 10", "Box Crasher", "Half Space Creator", 
-         "Inverted Winger", "Creative Winger", "Advanced Striker", "Physical Striker", "Creative Striker"]
+roles = ["Dominant Defender Percentile", "Ball Playing Defender Percentile", "Defensive Fullback Percentile", "Attacking Fullback Percentile", 
+         "Holding Midfielder Percentile", "Ball Progressor Percentile", "Number 10 Percentile", "Box Crasher Percentile", "Half Space Creator Percentile", 
+         "Inverted Winger Percentile", "Creative Winger Percentile", "Advanced Striker Percentile", "Physical Striker Percentile", "Creative Striker Percentile"]
 
 selected_role = st.sidebar.selectbox("Select Role", roles)
 
