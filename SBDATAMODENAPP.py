@@ -6,6 +6,7 @@
 
 import streamlit as st
 import pandas as pd
+import requests
 
 @st.cache_data
 def load_data():
