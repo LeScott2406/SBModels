@@ -6,7 +6,7 @@ import io
 # Function to load data
 @st.cache_data
 def load_data():
-    file_url = "https://github.com/LeScott2406/SBModels/raw/refs/heads/main/Updated_Data_With_Models_and_Percentiles_Optimized_v4.xlsx"
+    file_url = "https://github.com/LeScott2406/SBModels/raw/refs/heads/main/SBModels.xlsx.xlsx"
     try:
         response = requests.get(file_url)
         response.raise_for_status()
