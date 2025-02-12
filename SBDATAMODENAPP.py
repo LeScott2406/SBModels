@@ -6,7 +6,7 @@ import io
 # Function to load data
 @st.cache_data
 def load_data():
-    file_url = "https://github.com/LeScott2406/StatsApp/raw/main/data/Updated_Data.xlsx"  # Update with actual URL
+    file_url = "https://github.com/LeScott2406/SBModels/raw/refs/heads/main/Updated_Data_With_Models_and_Percentiles_Optimized_v4.xlsx"  # Update with actual URL
     try:
         response = requests.get(file_url)
         response.raise_for_status()  # Raises an error if the request fails
