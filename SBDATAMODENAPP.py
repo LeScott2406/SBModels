@@ -28,7 +28,7 @@ if data is None:
 # Sidebar Filters
 st.sidebar.header("Filters")
 
-# Fix Age filter (ensure values are reasonable)
+# Age filter
 if "Age" in data.columns and not data["Age"].isnull().all():
     age_min, age_max = int(data["Age"].min()), int(data["Age"].max())
     age_range = st.sidebar.slider("Select Age Range", min_value=age_min, max_value=age_max, value=(age_min, age_max))
@@ -41,6 +41,13 @@ if "Usage" in data.columns and not data["Usage"].isnull().all():
     usage_range = st.sidebar.slider("Select Usage Range", min_value=usage_min, max_value=usage_max, value=(usage_min, usage_max))
 else:
     usage_range = (0.0, 100.0)
+
+# Height filter
+if "Height" in data.columns and not data["Height"].isnull().all():
+    height_min, height_max = float(data["Height"].min()), float(data["Height"].max())
+    height_range = st.sidebar.slider("Select Height Range (cm)", min_value=height_min, max_value=height_max, value=(height_min, height_max))
+else:
+    height_range = (0.0, 250.0)  # Assuming a safe default range in cm
 
 # Position filter
 position_options = data["Position"].dropna().unique().tolist()
@@ -63,6 +70,7 @@ selected_role = st.sidebar.selectbox("Select Role", roles)
 filtered_data = data[
     (data["Age"].between(age_range[0], age_range[1])) &
     (data["Usage"].between(usage_range[0], usage_range[1])) &
+    (data["Height"].between(height_range[0], height_range[1])) &
     ((data["Position"].isin(positions)) if "All" not in positions else True) &
     ((data["League"].isin(league)) if "All" not in league else True)
 ]
@@ -88,4 +96,4 @@ filtered_data["Best Role"] = filtered_data.apply(best_role, axis=1)
 st.title("SB Player Models")
 st.write("### Filtered Players")
 
-st.dataframe(filtered_data[["Name", "Team", "Age", "Usage", "Position", selected_role, "Best Role"]])
+st.dataframe(filtered_data[["Name", "Team", "Age", "Usage", "Height", "Position", selected_role, "Best Role"]])
