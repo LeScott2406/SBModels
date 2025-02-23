@@ -42,12 +42,13 @@ if "Usage" in data.columns and not data["Usage"].isnull().all():
 else:
     usage_range = (0.0, 100.0)
 
-# Height filter
+# Height filter (minimum starts at 160 cm)
 if "Height" in data.columns and not data["Height"].isnull().all():
-    height_min, height_max = float(data["Height"].min()), float(data["Height"].max())
+    height_min = max(160, float(data["Height"].min()))  # Ensure a minimum of 160 cm
+    height_max = float(data["Height"].max())
     height_range = st.sidebar.slider("Select Height Range (cm)", min_value=height_min, max_value=height_max, value=(height_min, height_max))
 else:
-    height_range = (0.0, 250.0)  # Assuming a safe default range in cm
+    height_range = (160.0, 250.0)  # Default range
 
 # Position filter
 position_options = data["Position"].dropna().unique().tolist()
