@@ -47,14 +47,14 @@ position_options = data["Position"].dropna().unique().tolist()
 position_options.insert(0, "All")
 positions = st.sidebar.multiselect("Select Positions", options=position_options, default=position_options)
 
-# Competition filter
-competition_options = data["Competition"].dropna().unique().tolist()
-competition_options.insert(0, "All")
-competitions = st.sidebar.multiselect("Select Competitions", options=competition_options, default=competition_options)
+# League filter
+league_options = data["league"].dropna().unique().tolist()
+league_options.insert(0, "All")
+league = st.sidebar.multiselect("Select league", options=league_options, default=league_options)
 
 # Role filter
 roles = ["Dominant Defender Percentile", "Ball Playing Defender Percentile", "Defensive Fullback Percentile", "Attacking Fullback Percentile", 
-         "Holding Midfielder Percentile", "Ball Progressor Percentile", "Number 10 Percentile", "Box Crasher Percentile", "Half Space Creator Percentile", 
+         "Holding Midfielder Percentile", "Ball Progressor Percentile", "Number 10 Percentile", "Box Crasher Percentile", "Half Space Creator Percentile", "Zone Mover",
          "Inverted Winger Percentile", "Creative Winger Percentile", "Advanced Striker Percentile", "Physical Striker Percentile", "Creative Striker Percentile"]
 
 selected_role = st.sidebar.selectbox("Select Role", roles)
@@ -64,17 +64,17 @@ filtered_data = data[
     (data["Age"].between(age_range[0], age_range[1])) &
     (data["Usage"].between(usage_range[0], usage_range[1])) &
     ((data["Position"].isin(positions)) if "All" not in positions else True) &
-    ((data["Competition"].isin(competitions)) if "All" not in competitions else True)
+    ((data["League"].isin(league)) if "All" not in league else True)
 ]
 
 # Determine Best Role
 def best_role(row):
     position_roles = {
         "Defender": ["Dominant Defender Percentile", "Ball Playing Defender Percentile"],
-        "Fullback": ["Defensive Fullback Percentile", "Attacking Fullback Percentile"],
+        "Fullback": ["Defensive Fullback Percentile", "Attacking Fullback Percentile", "Zone Mover"],
         "Midfielder": ["Holding Midfielder Percentile", "Ball Progressor Percentile", 
-                       "Number 10 Percentile", "Box Crasher Percentile", "Half Space Creator Percentile"],
-        "Winger": ["Half Space Creator Percentile", "Inverted Winger Percentile", "Creative Winger Percentile"],
+                       "Number 10 Percentile", "Box Crasher Percentile", "Half Space Creator Percentile", "Zone Mover"],
+        "Winger": ["Half Space Creator Percentile", "Inverted Winger Percentile", "Creative Winger Percentile", "Zone Mover"],
         "Striker": ["Advanced Striker Percentile", "Physical Striker Percentile", "Creative Striker Percentile"],
     }
     for pos, roles in position_roles.items():
