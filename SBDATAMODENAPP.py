@@ -43,14 +43,14 @@ else:
     usage_range = (0.0, 100.0)
 
 # Position filter
-position_options = data["Position"].dropna().unique().tolist()  
+position_options = data["Position"].dropna().unique().tolist()
 position_options.insert(0, "All")
 positions = st.sidebar.multiselect("Select Positions", options=position_options, default=position_options)
 
 # League filter
-league_options = data["league"].dropna().unique().tolist()
+league_options = data["League"].dropna().unique().tolist()
 league_options.insert(0, "All")
-league = st.sidebar.multiselect("Select league", options=league_options, default=league_options)
+league = st.sidebar.multiselect("Select League", options=league_options, default=league_options)
 
 # Role filter
 roles = ["Dominant Defender Percentile", "Ball Playing Defender Percentile", "Defensive Fullback Percentile", "Attacking Fullback Percentile", 
