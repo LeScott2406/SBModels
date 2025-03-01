@@ -62,7 +62,7 @@ league = st.sidebar.multiselect("Select League", options=league_options, default
 # Role filter
 roles = ["Dominant Defender Percentile", "Ball Playing Defender Percentile", "Defensive Fullback Percentile", "Attacking Fullback Percentile", 
          "Holding Midfielder Percentile", "Ball Progressor Percentile", "Number 10 Percentile", "Box Crasher Percentile", "Half Space Creator Percentile", "Zone Mover Percentile",
-         "Inverted Winger Percentile", "Creative Winger Percentile", "Advanced Striker Percentile", "Physical Striker Percentile", "Creative Striker Percentile", "Game Breaker Percentile]
+         "Inverted Winger Percentile", "Creative Winger Percentile", "Advanced Striker Percentile", "Physical Striker Percentile", "Creative Striker Percentile", "Game Breaker Percentile"]
 
 selected_role = st.sidebar.selectbox("Select Role", roles)
 
@@ -81,9 +81,9 @@ def best_role(row):
         "Defender": ["Dominant Defender Percentile", "Ball Playing Defender Percentile"],
         "Fullback": ["Defensive Fullback Percentile", "Attacking Fullback Percentile", "Zone Mover"],
         "Midfielder": ["Holding Midfielder Percentile", "Ball Progressor Percentile", 
-                       "Number 10 Percentile", "Box Crasher Percentile", "Half Space Creator Percentile", "Zone Mover"],
-        "Winger": ["Half Space Creator Percentile", "Inverted Winger Percentile", "Creative Winger Percentile", "Zone Mover"],
-        "Striker": ["Advanced Striker Percentile", "Physical Striker Percentile", "Creative Striker Percentile"],
+                       "Number 10 Percentile", "Box Crasher Percentile", "Half Space Creator Percentile", "Zone Mover", "Game Breaker"],
+        "Winger": ["Half Space Creator Percentile", "Inverted Winger Percentile", "Creative Winger Percentile", "Zone Mover", "Game Breaker"],
+        "Striker": ["Advanced Striker Percentile", "Physical Striker Percentile", "Creative Striker Percentile", "Game Breaker"],
     }
     for pos, roles in position_roles.items():
         if row["Position"] in pos:
