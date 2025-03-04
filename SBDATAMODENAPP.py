@@ -3,12 +3,14 @@ import pandas as pd
 import requests
 import io
 
-# Function to load data
+# Google Sheets direct export link
+GOOGLE_SHEETS_URL = "https://docs.google.com/spreadsheets/d/1QGSGgDBmI7fkaBNK9ozFscOCVXMwrW6T/export?format=xlsx"
+
+# Function to load data from Google Sheets
 @st.cache_data
 def load_data():
-    file_url = "https://github.com/LeScott2406/SBModels/raw/refs/heads/main/Updated_Data_With_Models_and_Percentiles_Optimized_v4.xlsx"
     try:
-        response = requests.get(file_url)
+        response = requests.get(GOOGLE_SHEETS_URL)
         response.raise_for_status()
         file_content = io.BytesIO(response.content)
         data = pd.read_excel(file_content, engine="openpyxl")
@@ -33,7 +35,7 @@ if "Age" in data.columns and not data["Age"].isnull().all():
     age_min, age_max = int(data["Age"].min()), int(data["Age"].max())
     age_range = st.sidebar.slider("Select Age Range", min_value=age_min, max_value=age_max, value=(age_min, age_max))
 else:
-    age_range = (0, 100)  # Default safe range
+    age_range = (0, 100)
 
 # Usage filter
 if "Usage" in data.columns and not data["Usage"].isnull().all():
@@ -42,12 +44,12 @@ if "Usage" in data.columns and not data["Usage"].isnull().all():
 else:
     usage_range = (0.0, 100.0)
 
-# Height filter (starts from 0)
+# Height filter
 if "Height" in data.columns and not data["Height"].isnull().all():
     height_min, height_max = float(data["Height"].min()), float(data["Height"].max())
     height_range = st.sidebar.slider("Select Height Range (cm)", min_value=height_min, max_value=height_max, value=(height_min, height_max))
 else:
-    height_range = (0.0, 250.0)  # Default range
+    height_range = (0.0, 250.0)
 
 # Position filter
 position_options = data["Position"].dropna().unique().tolist()
@@ -60,9 +62,11 @@ league_options.insert(0, "All")
 league = st.sidebar.multiselect("Select League", options=league_options, default=league_options)
 
 # Role filter
-roles = ["Dominant Defender Percentile", "Ball Playing Defender Percentile", "Defensive Fullback Percentile", "Attacking Fullback Percentile", 
-         "Holding Midfielder Percentile", "Ball Progressor Percentile", "Number 10 Percentile", "Box Crasher Percentile", "Half Space Creator Percentile", "Zone Mover Percentile",
-         "Inverted Winger Percentile", "Creative Winger Percentile", "Advanced Striker Percentile", "Physical Striker Percentile", "Creative Striker Percentile", "Game Breaker Percentile"]
+roles = ["Dominant Defender Percentile", "Ball Playing Defender Percentile", "Defensive Fullback Percentile", 
+         "Attacking Fullback Percentile", "Holding Midfielder Percentile", "Ball Progressor Percentile", 
+         "Number 10 Percentile", "Box Crasher Percentile", "Half Space Creator Percentile", "Zone Mover Percentile",
+         "Inverted Winger Percentile", "Creative Winger Percentile", "Advanced Striker Percentile", 
+         "Physical Striker Percentile", "Creative Striker Percentile", "Game Breaker Percentile"]
 
 selected_role = st.sidebar.selectbox("Select Role", roles)
 
@@ -81,9 +85,12 @@ def best_role(row):
         "Defender": ["Dominant Defender Percentile", "Ball Playing Defender Percentile"],
         "Fullback": ["Defensive Fullback Percentile", "Attacking Fullback Percentile", "Zone Mover"],
         "Midfielder": ["Holding Midfielder Percentile", "Ball Progressor Percentile", 
-                       "Number 10 Percentile", "Box Crasher Percentile", "Half Space Creator Percentile", "Zone Mover", "Game Breaker"],
-        "Winger": ["Half Space Creator Percentile", "Inverted Winger Percentile", "Creative Winger Percentile", "Zone Mover", "Game Breaker"],
-        "Striker": ["Advanced Striker Percentile", "Physical Striker Percentile", "Creative Striker Percentile", "Game Breaker"],
+                       "Number 10 Percentile", "Box Crasher Percentile", "Half Space Creator Percentile", 
+                       "Zone Mover", "Game Breaker"],
+        "Winger": ["Half Space Creator Percentile", "Inverted Winger Percentile", 
+                   "Creative Winger Percentile", "Zone Mover", "Game Breaker"],
+        "Striker": ["Advanced Striker Percentile", "Physical Striker Percentile", 
+                    "Creative Striker Percentile", "Game Breaker"],
     }
     for pos, roles in position_roles.items():
         if row["Position"] in pos:
