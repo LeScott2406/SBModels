@@ -66,7 +66,7 @@ roles = ["Dominant Defender Percentile", "Ball Playing Defender Percentile", "De
          "Attacking Fullback Percentile", "Holding Midfielder Percentile", "Ball Progressor Percentile", 
          "Number 10 Percentile", "Box Crasher Percentile", "Half Space Creator Percentile", "Zone Mover Percentile",
          "Inverted Winger Percentile", "Creative Winger Percentile", "Advanced Striker Percentile", 
-         "Physical Striker Percentile", "Creative Striker Percentile", "Game Breaker Percentile", "Flyer"]
+         "Physical Striker Percentile", "Creative Striker Percentile", "Game Breaker Percentile", "Flyer Percentile"]
 
 selected_role = st.sidebar.selectbox("Select Role", roles)
 
