@@ -66,7 +66,7 @@ roles = ["Dominant Defender Percentile", "Ball Playing Defender Percentile", "De
          "Attacking Fullback Percentile", "Holding Midfielder Percentile", "Ball Progressor Percentile", 
          "Number 10 Percentile", "Box Crasher Percentile", "Half Space Creator Percentile", "Zone Mover Percentile",
          "Inverted Winger Percentile", "Creative Winger Percentile", "Advanced Striker Percentile", 
-         "Physical Striker Percentile", "Creative Striker Percentile", "Game Breaker Percentile"]
+         "Physical Striker Percentile", "Creative Striker Percentile", "Game Breaker Percentile", "Flyer"]
 
 selected_role = st.sidebar.selectbox("Select Role", roles)
 
@@ -83,12 +83,12 @@ filtered_data = data[
 def best_role(row):
     position_roles = {
         "Defender": ["Dominant Defender Percentile", "Ball Playing Defender Percentile"],
-        "Fullback": ["Defensive Fullback Percentile", "Attacking Fullback Percentile", "Zone Mover"],
+        "Fullback": ["Defensive Fullback Percentile", "Attacking Fullback Percentile", "Zone Mover", "Flyer"],
         "Midfielder": ["Holding Midfielder Percentile", "Ball Progressor Percentile", 
                        "Number 10 Percentile", "Box Crasher Percentile", "Half Space Creator Percentile", 
                        "Zone Mover", "Game Breaker"],
         "Winger": ["Half Space Creator Percentile", "Inverted Winger Percentile", 
-                   "Creative Winger Percentile", "Zone Mover", "Game Breaker"],
+                   "Creative Winger Percentile", "Zone Mover", "Game Breaker", "Flyer"],
         "Striker": ["Advanced Striker Percentile", "Physical Striker Percentile", 
                     "Creative Striker Percentile", "Game Breaker"],
     }
