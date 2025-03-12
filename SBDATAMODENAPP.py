@@ -4,7 +4,7 @@ import requests
 import io
 
 # Google Sheets direct export link
-GOOGLE_SHEETS_URL = "https://docs.google.com/spreadsheets/d/1QGSGgDBmI7fkaBNK9ozFscOCVXMwrW6T/export?format=xlsx"
+GOOGLE_SHEETS_URL = "https://docs.google.com/spreadsheets/d/1W4oroZL92cyMT1Q-pyBdsDTwchsI0MNd/export?format=xlsx"
 
 # Function to load data from Google Sheets
 @st.cache_data
@@ -66,7 +66,7 @@ roles = ["Dominant Defender Percentile", "Ball Playing Defender Percentile", "De
          "Attacking Fullback Percentile", "Holding Midfielder Percentile", "Ball Progressor Percentile", 
          "Number 10 Percentile", "Box Crasher Percentile", "Half Space Creator Percentile", "Zone Mover Percentile",
          "Inverted Winger Percentile", "Creative Winger Percentile", "Advanced Striker Percentile", 
-         "Physical Striker Percentile", "Creative Striker Percentile", "Game Breaker Percentile", "Flyer Percentile"]
+         "Physical Striker Percentile", "Creative Striker Percentile", "Game Breaker Percentile", "Flyer Percentile", "Disruptor Percentile"]
 
 selected_role = st.sidebar.selectbox("Select Role", roles)
 
@@ -86,7 +86,7 @@ def best_role(row):
         "Fullback": ["Defensive Fullback Percentile", "Attacking Fullback Percentile", "Zone Mover", "Flyer"],
         "Midfielder": ["Holding Midfielder Percentile", "Ball Progressor Percentile", 
                        "Number 10 Percentile", "Box Crasher Percentile", "Half Space Creator Percentile", 
-                       "Zone Mover", "Game Breaker"],
+                       "Zone Mover", "Game Breaker", "Disruptor"],
         "Winger": ["Half Space Creator Percentile", "Inverted Winger Percentile", 
                    "Creative Winger Percentile", "Zone Mover", "Game Breaker", "Flyer"],
         "Striker": ["Advanced Striker Percentile", "Physical Striker Percentile", 
