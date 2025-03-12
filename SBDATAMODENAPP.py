@@ -4,7 +4,7 @@ import requests
 import io
 
 # Google Sheets direct export link
-GOOGLE_SHEETS_URL = "https://docs.google.com/spreadsheets/d/1W4oroZL92cyMT1Q-pyBdsDTwchsI0MNd/export?format=xlsx"
+GOOGLE_SHEETS_URL = "https://docs.google.com/spreadsheets/d/14g3e_4Wh2HYnyJFqUVxJidW8Yn8kQSc0/export?format=xlsx"
 
 # Function to load data from Google Sheets
 @st.cache_data
