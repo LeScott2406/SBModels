@@ -3,25 +3,28 @@ import pandas as pd
 import requests
 import io
 
-# Google Sheets direct export link
+# Google Sheets direct export link (ensure it's publicly shared!)
 GOOGLE_SHEETS_URL = "https://docs.google.com/spreadsheets/d/14g3e_4Wh2HYnyJFqUVxJidW8Yn8kQSc0/export?format=xlsx"
 
-# Function to load data from Google Sheets
-@st.cache_data
+@st.cache_data(show_spinner="Loading data...")
 def load_data():
     try:
-        response = requests.get(GOOGLE_SHEETS_URL)
+        response = requests.get(GOOGLE_SHEETS_URL, timeout=30)
         response.raise_for_status()
+        
+        # Confirm it's not an HTML login page or error
+        if "html" in response.headers.get("Content-Type", ""):
+            raise ValueError("Google Sheets response is not a valid Excel file. Check sharing permissions.")
+        
         file_content = io.BytesIO(response.content)
-        data = pd.read_excel(file_content, engine="openpyxl")
-        data.fillna(0, inplace=True)
-        return data
-    except requests.exceptions.RequestException as e:
-        st.error(f"Error loading data: {e}")
+        df = pd.read_excel(file_content, engine="openpyxl")
+        df.fillna(0, inplace=True)
+        return df
+
+    except Exception as e:
+        st.error(f"⚠️ Error loading data from Google Sheets: {e}")
         return None
 
-# Load data
-data = load_data()
 
 # If data failed to load, stop execution
 if data is None:
