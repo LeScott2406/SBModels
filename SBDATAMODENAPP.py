@@ -6,7 +6,6 @@ import io
 # Google Sheets direct export link (ensure it's publicly shared!)
 GOOGLE_SHEETS_URL = "https://docs.google.com/spreadsheets/d/1ULfEHhRt-PoMFa-2BVAjH7XSzHY0Ev789lTLBaV3gL4/export?format=csv&gid=1740164591"
 
-
 # Load data from Google Sheets with better error handling
 @st.cache_data(show_spinner="Loading data...")
 def load_data():
@@ -16,10 +15,10 @@ def load_data():
 
         # Check for invalid HTML response (e.g. Google sign-in page)
         if "html" in response.headers.get("Content-Type", "").lower():
-            raise ValueError("Google Sheets response is not a valid Excel file. Check sharing permissions.")
+            raise ValueError("Google Sheets response is not a valid CSV file. Check sharing permissions.")
 
         file_content = io.BytesIO(response.content)
-        df = pd.read_excel(file_content, engine="openpyxl")
+        df = pd.read_csv(file_content)
         df.fillna(0, inplace=True)
         return df
 
@@ -28,6 +27,7 @@ def load_data():
         return pd.DataFrame()  # Return empty DataFrame instead of None
 
 # Load data
+data = load_data()
 data = load_data()
 
 # If data is empty, stop execution safely
