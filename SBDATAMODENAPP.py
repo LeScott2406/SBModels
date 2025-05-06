@@ -4,8 +4,8 @@ import requests
 import io
 
 # Google Sheets direct export link (ensure it's publicly shared!)
-GOOGLE_SHEETS_URL = "https://docs.google.com/spreadsheets/d/1ULfEHhRt-PoMFa-2BVAjH7XSzHY0Ev789lTLBaV3gL4/export?format=csv&id=1ULfEHhRt-PoMFa-2BVAjH7XSzHY0Ev789lTLBaV3gL4&gid=1740164591
-"
+GOOGLE_SHEETS_URL = "https://docs.google.com/spreadsheets/d/1ULfEHhRt-PoMFa-2BVAjH7XSzHY0Ev789lTLBaV3gL4/export?format=csv&gid=1740164591"
+
 
 # Load data from Google Sheets with better error handling
 @st.cache_data(show_spinner="Loading data...")
