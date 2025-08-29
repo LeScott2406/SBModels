@@ -4,7 +4,7 @@ import requests
 import io
 
 # Google Sheets direct export link (ensure it's publicly shared!)
-GOOGLE_SHEETS_URL = "https://docs.google.com/spreadsheets/d/1LgGQk5KXIKls0nurZUhgflfes32_B-dY_O9FAnrqOOQ/export?format=csv&gid=2116805173"
+GOOGLE_SHEETS_URL = "https://docs.google.com/spreadsheets/d/16a1smLZKc5ewUPBOF3U8a5OjSJTGgsBLgCq63YtF-nI/export?format=csv"
 
 # Load data from Google Sheets with better error handling
 @st.cache_data(show_spinner="Loading data...")
@@ -64,12 +64,12 @@ league = st.sidebar.multiselect("Select League", options=league_options, default
 
 # Role filter
 roles = [
-    "Dominant Defender Percentile", "Ball Playing Defender Percentile", "Defensive Fullback Percentile", 
-    "Attacking Fullback Percentile", "Holding Midfielder Percentile", "Ball Progressor Percentile", 
-    "Number 10 Percentile", "Box Crasher Percentile", "Half Space Creator Percentile", "Zone Mover Percentile",
-    "Inverted Winger Percentile", "Creative Winger Percentile", "Advanced Striker Percentile", 
-    "Physical Striker Percentile", "Creative Striker Percentile", "Game Breaker Percentile", 
-    "Flyer Percentile", "Disruptor Percentile"
+    "Dominant Defender ZScore", "Ball Playing Defender ZScore", "Defensive Fullback ZScore", 
+    "Attacking Fullback ZScore", "Holding Midfielder ZScore", "Ball Progressor ZScore", 
+    "Number 10 ZScore", "Box Crasher ZScore", "Half Space Creator ZScore", "Zone Mover ZScore",
+    "Inverted Winger ZScore", "Creative Winger ZScore", "Advanced Striker ZScore", 
+    "Physical Striker ZScore", "Creative Striker ZScore", "Game Breaker ZScore", 
+    "Flyer ZScore", "Disruptor ZScore", "Ground Eaters ZScore"
 ]
 selected_role = st.sidebar.selectbox("Select Role", roles)
 
@@ -84,20 +84,20 @@ filtered_data = data[
 # Determine Best Role
 def best_role(row):
     position_roles = {
-        "Defender": ["Dominant Defender Percentile", "Ball Playing Defender Percentile"],
-        "Fullback": ["Defensive Fullback Percentile", "Attacking Fullback Percentile", "Zone Mover", "Flyer"],
+        "Defender": ["Dominant Defender ZScore", "Ball Playing Defender ZScore"],
+        "Fullback": ["Defensive Fullback ZScore", "Attacking Fullback ZScore", "Zone Mover", "ZScore"],
         "Midfielder": [
-            "Holding Midfielder Percentile", "Ball Progressor Percentile", 
-            "Number 10 Percentile", "Box Crasher Percentile", "Half Space Creator Percentile", 
-            "Zone Mover", "Game Breaker", "Disruptor"
+            "Holding Midfielder ZScore", "Ball Progressor ZScore", 
+            "Number 10 ZScore", "Box Crasher ZScore", "Half Space Creator ZScore", 
+            "Zone Mover ZScore", "Game Breaker ZScore", "Disruptor ZScore", "Ground Eaters ZScore"
         ],
         "Winger": [
-            "Half Space Creator Percentile", "Inverted Winger Percentile", 
-            "Creative Winger Percentile", "Zone Mover", "Game Breaker", "Flyer"
+            "Half Space Creator ZScore", "Inverted Winger ZScore", 
+            "Creative Winger ZScore", "Zone Mover ZScore", "Game Breaker ZScore", "Flyer ZScore" 
         ],
         "Striker": [
-            "Advanced Striker Percentile", "Physical Striker Percentile", 
-            "Creative Striker Percentile", "Game Breaker"
+            "Advanced Striker ZScore", "Physical Striker ZScore", 
+            "Creative Striker ZScore", "Game Breaker ZScore"
         ],
     }
     for pos, roles in position_roles.items():
