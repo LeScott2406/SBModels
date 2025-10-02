@@ -5,7 +5,9 @@ import io
 
 # Google Sheets direct export link (ensure it's publicly shared!)
 GOOGLE_SHEETS_URL = "https://docs.google.com/spreadsheets/d/1tIDfgwVSmoeCL3ku-dxrzY1sg_FjUQrVIdgytctR528/export?format=xlsx"
+
 df = pd.read_excel(GOOGLE_SHEETS_URL)
+
 
 
 # Load data from Google Sheets with caching
