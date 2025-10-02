@@ -6,10 +6,6 @@ import io
 # Google Sheets direct export link (ensure it's publicly shared!)
 GOOGLE_SHEETS_URL = "https://docs.google.com/spreadsheets/d/1tIDfgwVSmoeCL3ku-dxrzY1sg_FjUQrVIdgytctR528/export?format=xlsx"
 
-df = pd.read_excel(GOOGLE_SHEETS_URL)
-
-
-
 # Load data from Google Sheets with caching
 @st.cache_data(show_spinner="Loading data...")
 def load_data():
@@ -19,9 +15,10 @@ def load_data():
 
         # Check for invalid HTML response (Google login page, etc.)
         if "html" in response.headers.get("Content-Type", "").lower():
-            raise ValueError("Google Sheets response is not a valid CSV. Check sharing permissions.")
+            raise ValueError("Google Sheets response is not a valid Excel file. Check sharing permissions.")
 
-        df = pd.read_csv(io.BytesIO(response.content))
+        # Read Excel directly from bytes
+        df = pd.read_excel(io.BytesIO(response.content))
         df.fillna(0, inplace=True)
         return df
 
@@ -70,7 +67,6 @@ roles = [
     "Inverted Winger Rank", "Creative Winger Rank", "Advanced Striker Rank",
     "Physical Striker Rank", "Creative Striker Rank", "Game Breaker Rank",
     "Flyer Rank", "Disruptor Rank", "Ground Eaters Rank",
-    
 ]
 selected_role = st.sidebar.selectbox("Select Role", roles)
 
@@ -105,4 +101,11 @@ filtered_data["Best Role"] = filtered_data.apply(best_role, axis=1)
 # Display Data
 st.title("SB Player Models")
 st.write("### Filtered Players")
-st.dataframe(filtered_data[["Name", "Team", "Age", "Usage", "Position", selected_role, "Best Role", "Prevention Rank", "Possession Rank", "Progression Rank", "Penetration Rank", "Production Rank", "Pressure Rank"]])
+
+st.dataframe(
+    filtered_data[
+        ["Name", "Team", "Age", "Usage", "Position", selected_role, "Best Role",
+         "Prevention Rank", "Possession Rank", "Progression Rank",
+         "Penetration Rank", "Production Rank", "Pressure Rank"]
+    ]
+)
