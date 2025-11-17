@@ -4,7 +4,8 @@ import requests
 import io
 
 # Google Sheets direct export link (ensure it's publicly shared!)
-GOOGLE_SHEETS_URL = "https://docs.google.com/spreadsheets/d/1i15jZwCz5wJpzxeCdvB-iIfGM3OjFFKkBxheQvxV404/export?format=xlsx"
+GOOGLE_SHEETS_URL = "https://docs.google.com/spreadsheets/d/1PUy11BfNijxBAppdIMiSPy20f_cwUTuOS2RXXVESpMk/export?format=xlsx"
+
 
 
 
