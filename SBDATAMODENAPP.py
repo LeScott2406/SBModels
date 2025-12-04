@@ -2,37 +2,43 @@ import streamlit as st
 import pandas as pd
 import requests
 import io
+import time
 
 # Google Sheets direct export link (ensure it's publicly shared!)
 GOOGLE_SHEETS_URL = "https://docs.google.com/spreadsheets/d/1tYSw4OKrMq0eaw9utSrL49mUn6nfX_gnj49x64BU0iU/export?format=xlsx"
 
-
-
-
-
-
-# Load data from Google Sheets with caching
-@st.cache_data(show_spinner="Loading data...")
+# Load data from Google Sheets with caching + retry
+@st.cache_data(show_spinner="Loading data...", ttl=3600)
 def load_data():
-    try:
-        response = requests.get(GOOGLE_SHEETS_URL, timeout=30)
-        response.raise_for_status()
+    retries = 3
+    delay = 3
 
-        # Check for invalid HTML response (Google login page, etc.)
-        if "html" in response.headers.get("Content-Type", "").lower():
-            raise ValueError("Google Sheets response is not a valid Excel file. Check sharing permissions.")
+    for attempt in range(retries):
+        try:
+            response = requests.get(GOOGLE_SHEETS_URL, timeout=30)
+            response.raise_for_status()
 
-        # Read Excel directly from bytes
-        df = pd.read_excel(io.BytesIO(response.content))
-        df.fillna(0, inplace=True)
-        return df
+            # Ensure it's a valid file (not a Google login HTML page)
+            if "html" in response.headers.get("Content-Type", "").lower():
+                raise ValueError("Google Sheets returned HTML instead of a file. Check sharing permissions.")
 
-    except Exception as e:
-        st.error(f"⚠️ Error loading data from Google Sheets: {e}")
-        return pd.DataFrame()  # Return empty DataFrame
+            # Convert to DataFrame
+            df = pd.read_excel(io.BytesIO(response.content))
+            df.fillna(0, inplace=True)
+            return df
+
+        except Exception as e:
+            if attempt == retries - 1:
+                raise e
+            time.sleep(delay)
 
 # Load the data
-data = load_data()
+try:
+    data = load_data()
+except Exception as e:
+    st.error(f"⚠️ Error loading data from Google Sheets: {e}")
+    data = pd.DataFrame()
+
 if data.empty:
     st.warning("No data available. Please check the source.")
     st.stop()
